@@ -131,12 +131,18 @@ class Canvas {
 
     drawUi = function(state)
     {
-        if (state.status == "won" || state.status == "lost") {
+        if (state.status == "won") {
             this.uiCtx.clearRect(0, 0, 200, 200);
             this.uiCtx.fillStyle = "black";
             this.uiCtx.font = '40px sans-serif';
             this.uiCtx.textAlign = "center";
-            this.uiCtx.fillText("You " + state.status + ", press space to continue", width / 2, height / 2 - 40);
+            this.uiCtx.fillText("Congratulations, you " + state.status + "! Press space to continue", width / 2, height / 2 - 40);
+        } else if (state.status == "lost") {
+            this.uiCtx.clearRect(0, 0, 200, 200);
+            this.uiCtx.fillStyle = "black";
+            this.uiCtx.font = '40px sans-serif';
+            this.uiCtx.textAlign = "center";
+            this.uiCtx.fillText("Unlucky, you " + state.status + ". Press space to continue", width / 2, height / 2 - 40);
         } else {
             this.uiCtx.clearRect(0, 0, 300, 100);
             this.uiCtx.fillStyle = "white";
@@ -144,7 +150,7 @@ class Canvas {
             this.uiCtx.fillText("100/" + state.health, 20, 20);
             this.uiCtx.font = '14px sans-serif';
             this.uiCtx.fillText("Lives: " + lives, 20, 40);
-            this.uiCtx.fillText("Hearts: " + state.score + "/" + state.itemCount, 20, 60);
+            this.uiCtx.fillText("Presents: " + state.score + "/" + state.itemCount, 20, 60);
         }
     }
 
@@ -185,7 +191,7 @@ class Canvas {
                 actor.prevY = y;
             } else {
                 if (actor.type == "lava") {
-                    tileX = Math.floor(Date.now() / 60) % 2 * scale;
+                    tileX = Math.floor(Date.now() / 60) % 1 * scale;
                 }
 
                 if (this.colorMode) {
