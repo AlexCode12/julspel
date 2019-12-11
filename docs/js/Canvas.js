@@ -1,5 +1,5 @@
 class Canvas {
-    constructor(width, height, parent, level)
+    constructor(width, height, parent, level, colorMode)
     {
         this.width = Math.min(width, level.width * scale);
         this.height = Math.min(height, level.height * scale);
@@ -30,6 +30,7 @@ class Canvas {
         parent.appendChild(this.uiLayer);
 
         this.flipPlayer = false;
+        this.colorMode = colorMode || false;
 
         this.viewport = {
             left: 0,
@@ -37,9 +38,6 @@ class Canvas {
             width: this.width / scale,
             height: this.height / scale
         };
-
-        // this.prevX = 0;
-        // this.prevY = 0;
     }
 
     updateViewport = function(state)
@@ -70,7 +68,7 @@ class Canvas {
         let xEnd = Math.ceil(left + width);
         let yStart = Math.floor(top);
         let yEnd = Math.ceil(top + height);
-      
+
         for (let y = yStart; y < yEnd; y++) {
             for (let x = xStart; x < xEnd; x++) {
                 let tile = level.layout[y][x];
@@ -78,10 +76,13 @@ class Canvas {
                     let screenX = (x - left) * scale;
                     let screenY = (y - top) * scale;
 
-                    if(tile !== undefined) {
-                        this.mapCtx.drawImage(sources[tile].image, screenX, screenY, scale, scale);
-                        // this.mapCtx.fillStyle = sources[tile].color;
-                        // this.mapCtx.fillRect(screenX, screenY, scale, scale);
+                    if (tile !== undefined) {
+                        if (this.colorMode) {
+                            this.mapCtx.fillStyle = sources[tile].color;
+                            this.mapCtx.fillRect(screenX, screenY, scale, scale);    
+                        } else {
+                            this.mapCtx.drawImage(sources[tile].image, screenX, screenY, scale, scale);
+                        }
                     }
                 }
             }
@@ -96,14 +97,15 @@ class Canvas {
         } else if (state.status == "lost") {
             this.bgCtx.fillStyle = "rgb(255, 0, 0)";
         } else {
-            this.bgCtx.fillStyle = "rgb(16, 42, 81)";
+            var gradient = this.bgCtx.createLinearGradient(left, top, this.width, this.height);
+            gradient.addColorStop(1, "rgb(16, 42, 81)");
+            this.bgCtx.fillStyle = gradient;
+            //this.bgCtx.fillStyle = "rgb(152, 266, 251)";
         }
         this.bgCtx.fillRect(0, 0, this.width, this.height);
         let _top = (height - top) * 32;
         let _left = left * 32;
-        // this.bgCtx.fillStyle = "pink";
 
-        // this.bgCtx.fillRect(500, 200, 200, 200);
         // this.bgCtx.drawImage(sources.mountain.image, 512, _top + 128, sources.mountain.width, sources.mountain.height);
         // this.bgCtx.drawImage(sources.mountain.image, 128, _top + 128, sources.mountain.width, sources.mountain.height);
         // this.bgCtx.drawImage(sources.mountains.image, left + 64, _top + 128, sources.mountains.width, sources.mountains.height);
@@ -123,86 +125,93 @@ class Canvas {
         this.clearDisplay(this.actorsCtx);
         this.drawBg(state);
         this.drawMap(state.level);
-        this.drawActors(state.actors);
+        this.drawActors(state.actors, state.rocks);
         this.drawUi(state);
     }
 
     drawUi = function(state)
     {
         if (state.status == "won" || state.status == "lost") {
+            this.uiCtx.clearRect(0, 0, 200, 200);
             this.uiCtx.fillStyle = "black";
             this.uiCtx.font = '40px sans-serif';
             this.uiCtx.textAlign = "center";
-            this.uiCtx.fillText(state.status, width / 2, height / 2 - 40);
+            this.uiCtx.fillText("You " + state.status + ", press space to continue", width / 2, height / 2 - 40);
         } else {
-            this.uiCtx.clearRect(0, 0, 80, 80);
-            this.uiCtx.fillStyle = "black";
+            this.uiCtx.clearRect(0, 0, 300, 100);
+            this.uiCtx.fillStyle = "white";
             this.uiCtx.font = '20px sans-serif';
-            this.uiCtx.fillText(state.score, 20, 20);        
+            this.uiCtx.fillText("100/" + state.health, 20, 20);
+            this.uiCtx.font = '14px sans-serif';
+            this.uiCtx.fillText("Lives: " + lives, 20, 40);
+            this.uiCtx.fillText("Hearts: " + state.score + "/" + state.itemCount, 20, 60);
         }
     }
 
     clear()
     {
-        //this.bgLayer.remove();
         this.mapLayer.remove();
         this.actorsLayer.remove();
-        //this.uiLayer.remove();
     }
 
     clearDisplay = function(ctx) {
         ctx.clearRect(0, 0, this.width, this.height);
     }
 
-    drawActors = function(actors)
+    drawActors = function(actors, rocks)
     {
         for (let actor of actors) {
             let width = actor.size.x * scale;
             let height = actor.size.y * scale;
             let x = (actor.pos.x - this.viewport.left) * scale;
             let y = (actor.pos.y - this.viewport.top) * scale;
+            let tileY = 0;
+            let tileX = 0; 
             if (actor.type == "player") {
-                this.drawPlayer(actor, x, y, width, height);
+                this.drawPlayer(actor, x, y, width, height, rocks);
             } else if (actor.type == "enemy") {
-                // this.flipPlayer = actor.speed.x > 0;
-                let tile = Math.floor(Date.now() / 60) % 4;
-                // this.actorsCtx.save();
-                // if (this.flipPlayer) {
-                //     this.flipHorizontally(this.actorsCtx, x + width / 2);
-                // }
-                let tileX = tile * sources.enemy.width;
-                let tileY = 0;
-                if (actor.delta < 0) {
+                y = y + 4;
+                let tile = Math.floor(Date.now() / 60) % 9;
+
+                tileX = tile * sources.enemy.width;
+
+                if (actor.delta > 0) {
                     tileY = 1;
                 }
+
                 tileY = tileY * sources.enemy.height;
-                // this.actorsCtx.clearRect(actor.prevX , actor.prevY , width, height);
                 this.actorsCtx.drawImage(sources.enemy.image, tileX, tileY, sources.enemy.width, sources.enemy.height, x, y, width, height);
                 actor.prevX = x;
                 actor.prevY = y;
-                // this.actorsCtx.restore();
             } else {
-                this.actorsCtx.drawImage(sources[actor.type].image, x, y, width, height);
-                // this.mapCtx.fillStyle = sources[actor.type].color;
-                // this.mapCtx.fillRect(x, y, width, height);
+                if (actor.type == "lava") {
+                    tileX = Math.floor(Date.now() / 60) % 2 * scale;
+                }
+
+                if (this.colorMode) {
+                    this.mapCtx.fillStyle = sources[actor.type].color;
+                    this.mapCtx.fillRect(x, y, width, height);    
+                } else {
+                    this.actorsCtx.drawImage(sources[actor.type].image, 
+                                            tileX, tileY,
+                                            sources[actor.type].width, sources[actor.type].height,
+                                            x, y, 
+                                            width, height);
+                }
             }
         }
     }
 
-    drawPlayer = function(player, x, y, width, height)
+    drawPlayer = function(player, x, y, width, height, rocks)
     {
-        // let playerOverlap = 4;
-        // width += playerOverlap * 1;
-        // height += playerOverlap * 3;
-        // x -= playerOverlap;
-        // y -= playerOverlap;
+        y = y + 4;
+        let tile = 1;
+        let jump = 0;
 
         if (player.speed.x != 0) {
             this.flipPlayer = player.speed.x > 0;
         }
 
-        let tile = 1;
-        let jump = 0;
         if (player.speed.y != 0) {
             tile = Math.floor(Date.now() / 180) % 13;
             jump = 1;
@@ -214,7 +223,11 @@ class Canvas {
         this.actorsCtx.save();
         if (this.flipPlayer) {
             this.flipHorizontally(this.actorsCtx, x + width / 2);
+            player.facing = "right";
+        } else {
+            player.facing = "left";
         }
+
         let tileX = tile * sources.player.width;
         let tileY = jump * sources.player.height;
         
@@ -222,9 +235,22 @@ class Canvas {
         this.actorsCtx.restore();
         player.prevX = x;
         player.prevY = y; 
+
+        if (rocks > 0) {
+            let fx;
+            if (player.facing == "right") {
+                fx = x + 20;
+            } else {
+                fx = x + 30;
+            }
+            this.actorsCtx.drawImage(sources.rock.image, 
+                fx, y + 40,
+                16, 16);
+        }
     }
 
-    flipHorizontally = function(ctx, around) {
+    flipHorizontally = function(ctx, around)
+    {
         ctx.translate(around, 0);
         ctx.scale(-1, 1);
         ctx.translate(-around, 0);

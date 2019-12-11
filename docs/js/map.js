@@ -29,11 +29,11 @@ let sources = {
         offsetY: 512
     },
     enemy: {
-        src: 'img/sprites/dino.png',
-        srcWidth: 192,
-        srcHeight: 32,
-        width: 48,
-        height: 32,
+        src: 'img/sprites/skurk.png',
+        srcWidth: 864,
+        srcHeight: 192,
+        width: 96,
+        height: 96,
         offsetX: 0,
         offsetY: 0
     },
@@ -41,8 +41,8 @@ let sources = {
         src: 'img/sprites/cavedude_side2.png',
         srcWidth: 32,
         srcHeight: 32,
-        width: 96,
-        height: 96,
+        width: 32,
+        height: 32,
         offsetX: 192,
         offsetY: 480
     },
@@ -57,7 +57,7 @@ let sources = {
     },
     lava: {
         src: 'img/sprites/cavedude_side2.png',
-        srcWidth: 32,
+        srcWidth: 64,
         srcHeight: 32,
         width: 32,
         height: 32,
@@ -155,5 +155,9 @@ let sources = {
         offsetX: 352,
         offsetY: 320
     },
-    map1: {src: 'img/maps/tower.png'}
+    map1: {src: 'img/maps/tower.png'},
+    map2: {src: 'img/maps/tower1.png'},
+    map3: {src: 'img/maps/tower2.png'}
 };
+
+let maps = [sources.map1, sources.map2, sources.map3];
