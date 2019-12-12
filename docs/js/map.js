@@ -10,7 +10,7 @@ const levelKey = {
     "155,55,0": "ground",
     "100,100,100": Rock,
     "255,255,100": Lava,
-    "255,255,155": Lava, 
+    "255,255,155": Lava2,
     "0,255,0": Player,
     "255,0,100": Item,
     "255,100,255": Enemy
@@ -21,12 +21,12 @@ const groundTypes = ["grass", "ground", "platformC", "platformR", "platformL"];
 let sources = {
     player: {
         src: 'img/sprites/cavedude_side2.png',
-        srcWidth: 1248,
-        srcHeight: 186,
-        width: 96,
+        srcWidth: 1600,
+        srcHeight: 1200,
+        width: 64,
         height: 96,
-        offsetX: 0,
-        offsetY: 512
+        offsetX: 7.5,
+        offsetY: 608
     },
     enemy: {
         src: 'img/sprites/skurk.png',
@@ -64,6 +64,15 @@ let sources = {
         offsetX: 96,
         offsetY: 0
     },
+    Lava2:{
+        src: 'img/sprites/cavedude_side2.png',
+        srcWidth: 64,
+        srcHeight: 32,
+        width: 32,
+        height: 31,
+        offsetX: 127,
+        offsetY: 0
+    },
     ground: {
         src: 'img/sprites/cavedude_side2.png',
         srcWidth: 32,
@@ -79,7 +88,7 @@ let sources = {
         srcHeight: 32,
         width: 32,
         height: 32,
-        offsetX: 32,
+        offsetX: 33,
         offsetY: 480
     },
     platformL: {
