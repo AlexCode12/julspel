@@ -3,7 +3,7 @@ class Player
     constructor(pos, speed, prevX, prevY, facing)
     {
         this.pos = pos;
-        this.size = new Vector(2, 3);
+        this.size = new Vector(2, 2);
         this.speed = speed;
         this.xOverlap = 4;
         this.xSpeed = 12;
