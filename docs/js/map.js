@@ -125,7 +125,7 @@ let sources = {
         width: 352,
         height: 288,
         offsetX: 0,
-        offsetY: 32,
+        offsetY: 320,
         repeat: "repeat-x"
     },
     mountain: {
@@ -134,17 +134,17 @@ let sources = {
         srcHeight: 320,
         width: 160,
         height: 320,
-        offsetX: 384,
-        offsetY: 0
+        offsetX: 0,
+        offsetY: 160
     },
     cloud: {
         src: 'img/sprites/cavedude_side2.png',
-        srcWidth: 224,
-        srcHeight: 96,
+        srcWidth: 96,
+        srcHeight: 128,
         width: 224,
         height: 96,
-        offsetX: 0,
-        offsetY: 320
+        offsetX: 79.5,
+        offsetY: 329
     },
     cloud2: {
         src: 'img/sprites/cavedude_side2.png',

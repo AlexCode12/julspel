@@ -136,20 +136,20 @@ class Canvas {
             this.uiCtx.fillStyle = "black";
             this.uiCtx.font = '40px sans-serif';
             this.uiCtx.textAlign = "center";
-            this.uiCtx.fillText("Congratulations, you " + state.status + "! Press space to continue", width / 2, height / 2 - 40);
+            this.uiCtx.fillText("Congratulations, you " + state.status + "! Christmas has been saved!", width / 2, height / 2 - 40);
         } else if (state.status == "lost") {
             this.uiCtx.clearRect(0, 0, 200, 200);
             this.uiCtx.fillStyle = "black";
             this.uiCtx.font = '40px sans-serif';
             this.uiCtx.textAlign = "center";
-            this.uiCtx.fillText("Unlucky, you " + state.status + ". Press space to continue", width / 2, height / 2 - 40);
+            this.uiCtx.fillText("Unlucky, you " + state.status + ". Press space to try again", width / 2, height / 2 - 40);
         } else {
             this.uiCtx.clearRect(0, 0, 300, 100);
             this.uiCtx.fillStyle = "white";
             this.uiCtx.font = '20px sans-serif';
             this.uiCtx.fillText("HEALTH: "+ state.health + " /100", 20, 20);
             this.uiCtx.font = '14px sans-serif';
-            this.uiCtx.fillText("Presents: " + state.score + "/" + state.itemCount, 20, 40);
+            this.uiCtx.fillText("Presents (gathered/remaining): " + state.score + "/" + state.itemCount, 20, 40);
         }
     }
 
